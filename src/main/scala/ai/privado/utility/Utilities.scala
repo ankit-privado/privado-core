@@ -59,10 +59,10 @@ import overflowdb.BatchedUpdate
 import scala.util.{Failure, Success, Try}
 import java.nio.file.Paths
 import java.util.regex.{Pattern, PatternSyntaxException}
-import scala.io.Source
 import io.shiftleft.semanticcpg.language._
-import ai.privado.semantic.Language.finder
 import overflowdb.traversal.Traversal
+import io.joern.dataflowengineoss.DefaultSemantics
+import io.joern.dataflowengineoss.DefaultSemantics.{javaFlows, operatorFlows}
 
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -126,8 +126,7 @@ object Utilities {
     * @return
     */
   def getDefaultSemantics: Semantics = {
-    val semanticsFilename = Source.fromResource("default.semantics")
-    Semantics.fromList(new Parser().parse(semanticsFilename.getLines().mkString("\n")))
+    DefaultSemantics.javaSemantics()
   }
 
   /** Utility to get the semantics (default + custom) using cpg for dataflow queries
@@ -137,9 +136,6 @@ object Utilities {
     * @return
     */
   def getSemantics(cpg: Cpg): Semantics = {
-    val semanticsFilename = Source.fromResource("default.semantics")
-
-    val defaultSemantics = semanticsFilename.getLines().toList
     val customSinkSemantics = cpg.call
       .where(_.tag.nameExact(Constants.catLevelOne).valueExact(CatLevelOne.SINKS.name))
       .methodFullName
@@ -195,7 +191,7 @@ object Utilities {
     semanticFromConfig.foreach(logger.debug)
 
     val finalSemantics =
-      (defaultSemantics ++ customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics
+      (operatorFlows ++ customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics
         ++ customStringSemantics ++ customNonPersonalMemberSemantics
         ++ customSinkSemantics ++ semanticFromConfig)
         .mkString("\n")

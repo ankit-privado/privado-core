@@ -191,7 +191,7 @@ object Utilities {
     semanticFromConfig.foreach(logger.debug)
 
     val finalSemantics =
-      (operatorFlows ++ customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics
+      (operatorFlows ++ javaFlows ++ customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics
         ++ customStringSemantics ++ customNonPersonalMemberSemantics
         ++ customSinkSemantics ++ semanticFromConfig)
         .mkString("\n")

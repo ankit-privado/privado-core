@@ -123,6 +123,7 @@ object Utilities {
   }
 
   /** Utility to get the default semantics for dataflow queries
+    *
     * @return
     */
   def getDefaultSemantics: Semantics = {
@@ -190,13 +191,11 @@ object Utilities {
     logger.debug("\nCustom semanticFromConfig semantics")
     semanticFromConfig.foreach(logger.debug)
 
-    val finalSemantics =
-      (operatorFlows ++ javaFlows ++ customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics
-        ++ customStringSemantics ++ customNonPersonalMemberSemantics
-        ++ customSinkSemantics ++ semanticFromConfig)
-        .mkString("\n")
-
-    Semantics.fromList(new Parser().parse(finalSemantics))
+    val list =
+      customNonTaintDefaultSemantics ++ specialNonTaintDefaultSemantics ++ customStringSemantics ++ customNonPersonalMemberSemantics ++ customSinkSemantics ++ semanticFromConfig
+    val parsed         = new Parser().parse(list.mkString("\n"))
+    val finalSemantics = operatorFlows ++ javaFlows ++ parsed
+    Semantics.fromList(finalSemantics)
   }
 
   /** Utility to filter rules by catLevelOne
@@ -262,6 +261,7 @@ object Utilities {
   }
 
   /** If environment variable present will return that otherwise the repoPath
+    *
     * @param repoPath
     * @return
     */
@@ -305,6 +305,7 @@ object Utilities {
   }
 
   /** Returns all files matching the given extensions
+    *
     * @param folderPath
     * @param extension
     * @return
@@ -324,6 +325,7 @@ object Utilities {
   }
 
   /** Returns the SHA256 hash for a given string.
+    *
     * @param value
     * @return
     *   the SHA256 hash for the value
@@ -332,6 +334,7 @@ object Utilities {
     String.format("%032x", new BigInteger(1, MessageDigest.getInstance("SHA-256").digest(value.getBytes("UTF-8"))))
 
   /** Generate semantics for tainting passed argument based on the number of parameter in method signature
+    *
     * @param methodName
     *   \- complete signature of method
     * @return
@@ -351,6 +354,7 @@ object Utilities {
   }
 
   /** Generate Semantic string based on input Semantic
+    *
     * @param semantic
     *   \- semantic object containing semantic information
     * @return
@@ -364,6 +368,7 @@ object Utilities {
   }
 
   /** Returns only rules which belong to the correponding passed language along with Default and Unknown
+    *
     * @param rules
     * @param lang
     * @return
@@ -371,6 +376,7 @@ object Utilities {
   def filterRuleByLanguage(rules: ConfigAndRules, lang: Language.Value): ConfigAndRules = {
     def getRuleByLang(rule: RuleInfo) =
       rule.language == lang || rule.language == Language.DEFAULT || rule.language == Language.UNKNOWN
+
     def getSemanticRuleByLang(rule: Semantic) =
       rule.language == lang || rule.language == Language.DEFAULT || rule.language == Language.UNKNOWN
 
@@ -385,6 +391,7 @@ object Utilities {
   }
 
   /** Returns file name for a node
+    *
     * @param node
     * @return
     */
@@ -393,6 +400,7 @@ object Utilities {
   }
 
   /** Returns the Semantics for functions with void return type Default behavior is not propagating the taint
+    *
     * @param String
     *   methodFullName
     * @return
@@ -403,6 +411,7 @@ object Utilities {
   }
 
   /** Generates Semantics for non Personal member
+    *
     * @param cpg
     * @return
     *   non-tainting semantic rule

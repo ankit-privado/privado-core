@@ -222,6 +222,7 @@ project/plugins/project/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+.metals
 
 # Local History for Visual Studio Code
 .history/
@@ -242,3 +243,6 @@ project/plugins/project/
 # End of https://www.toptal.com/developers/gitignore/api/scala,java,intellij+all,visualstudiocode,eclipse,sbt
 /.bsp/sbt.json
 /.idea/codeStyles/codeStyleConfig.xml
+
+
+/.metals

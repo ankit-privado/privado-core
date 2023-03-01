@@ -107,6 +107,9 @@ jobs:
           path: ./temp/standalone-monitoring-stability
           ref: PR-blocker
 
+      - name: rrrr
+        run: cat /home/runner/work/privado-core/privado-core/results/slack_summary.txt
+
       - name: Export workflow output
         run: cd ./temp/standalone-monitoring-stability && python3 ./workflow_check.py /home/runner/work/privado-core/privado-core/results/slack_summary.txt
 

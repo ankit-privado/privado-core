@@ -52,7 +52,7 @@ jobs:
           path: /home/runner/work/privado-core/privado-core/temp/standalone-monitoring-stability/results
 
   send-result-to-slack:
-    needs: setup_and_scan
+    needs: setup-and-scan
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3

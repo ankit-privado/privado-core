@@ -82,7 +82,7 @@ jobs:
       #     file_type: "zip"
 
   send-report-to-workflow:
-    needs: send_and_scan
+    needs: send_and_scan-to-slack
     runs-on: ubuntu-latest
     steps:
 

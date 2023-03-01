@@ -126,7 +126,7 @@ jobs:
         run: echo ${{ env.MESSAGE }}
 
       - name: Workflow report analysis
-        if: ${{ env.MESSAGE }} != echo "True"
+        if: ${{ env.MESSAGE }} != "True"
         uses: actions/github-script@v3
         with:
           script: |

@@ -113,10 +113,13 @@ jobs:
       - name: Export workflow output
         run: cd ./temp/standalone-monitoring-stability && python3 ./workflow_check.py /home/runner/work/privado-core/privado-core/results/slack_summary.txt
 
+      - name: uu
+        run: cat ./temp/standalone-monitoring-stability/action_result.txt
+
       - name: Set summary variable
         run: |
           echo "MESSAGE<<EOF" >> $GITHUB_ENV
-          echo "$(cat ./temp/standalone-monitoring-stability/action_result.txt.txt)" >> $GITHUB_ENV
+          echo "$(cat ./temp/standalone-monitoring-stability/action_result.txt)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV 
 
       - name: check

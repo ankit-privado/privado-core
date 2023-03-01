@@ -125,14 +125,14 @@ jobs:
       - name: check
         run: echo ${{ env.MESSAGE }}
 
-      - name: Set True environment variable
-        run: echo "value=True" >> $GITHUB_ENV
+      # - name: Set True environment variable
+      #   run: echo "value=True" >> $GITHUB_ENV
 
-      - name: dfrd
-        run: echo ${{env.value}}
+      # - name: dfrd
+      #   run: echo ${{env.value}}
 
       - name: Workflow report analysis
-        if: ${{ env.MESSAGE }} != ${{ env.value }}
+        if: ${{ env.MESSAGE == 'True' }}
         uses: actions/github-script@v3
         with:
           script: |

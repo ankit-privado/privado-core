@@ -81,8 +81,8 @@ jobs:
       #     initial_comment: "Comparison Results generated on ${{github.event.repository.name}} by PR ${{github.event.number}} from branch ${{github.head_ref}} to ${{github.base_ref}} \nPR link https://github.com/Privado-Inc/privado-core/pull/${{github.event.number}} \nSummary Report:\n ${{ env.MESSAGE }}"
       #     file_type: "zip"
 
-  send-report-to-workflow:
-    needs: send-and-scan-to-slack
+  send-result-to-workflow:
+    needs: send-result-to-slack
     runs-on: ubuntu-latest
     steps:
 

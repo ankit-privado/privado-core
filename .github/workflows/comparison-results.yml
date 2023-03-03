@@ -123,5 +123,5 @@ jobs:
           echo "EOF" >> $GITHUB_ENV 
 
       - name: Workflow report analysis
-        if: ${{ env.MESSAGE == 'true' }}
+        if: ${{ env.MESSAGE != 'true' }}
         run: exit 1

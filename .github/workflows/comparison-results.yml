@@ -122,18 +122,7 @@ jobs:
           echo "$(cat ./temp/standalone-monitoring-stability/action_result.txt)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV 
 
-      - name: check
-        run: echo ${{ env.MESSAGE }}
-
-      - name: Set True environment variable
-        run: echo "value=True" >> $GITHUB_ENV
-
-      - name: dfrd
-        run: echo ${{env.value}}
-
       - name: Workflow report analysis
-        if: ${{ env.MESSAGE != 'yrue' }}
+        if: ${{ env.MESSAGE != 'rrue' }}
         uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed(${{ env.MESSAGE }})
+        run: exit 1

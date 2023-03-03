@@ -124,5 +124,4 @@ jobs:
 
       - name: Workflow report analysis
         if: ${{ env.MESSAGE != 'rrue' }}
-        uses: actions/github-script@v3
         run: exit 1

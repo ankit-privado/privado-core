@@ -81,6 +81,7 @@ object CommandConstants {
   val UNRESOLVED_REPORT_ABBR                       = "ur"
   val TEST_OUTPUT                                  = "test-output"
   val TEST_OUTPUT_ABBR                             = "tout"
+  val rr = "rr"
 }
 
 object CommandParser {

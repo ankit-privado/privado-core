@@ -1,7 +1,7 @@
 name: Check Code Format 
 
 on:
-  pull_request:
+  push:
     branches:
       - "**"
 

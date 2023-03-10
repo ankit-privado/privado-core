@@ -2,12 +2,10 @@ name: Monitoring Stability and Comparing Results
 
 # Triggers when a pull_request or a push action is configured on master branch
 on:
-  pull_request:
-    branches:
-      - "**"
+  pull_request_target:
 
 jobs:
-  setup_and_scan:
+  setup-and-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,6 +21,7 @@ jobs:
 
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
+
       - name: Install Python 3.10
         uses: actions/setup-python@v4
         with:
@@ -33,7 +32,7 @@ jobs:
         with:
           repository: Privado-Inc/standalone-monitoring-stability
           path: ./temp/standalone-monitoring-stability
-          ref: main 
+          ref: PR-blocker
       
       - name: Run the script for ${{github.head_ref}} and ${{github.base_ref}}
         run: cd ./temp/standalone-monitoring-stability && pip install -r requirements.txt && python3 ./run.py -b ${{github.base_ref}} -h ${{github.head_ref}}
@@ -50,8 +49,8 @@ jobs:
           name: results
           path: /home/runner/work/privado-core/privado-core/temp/standalone-monitoring-stability/results
 
-  send-result:
-    needs: setup_and_scan
+  send-result-to-slack:
+    needs: setup-and-scan
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
@@ -71,11 +70,53 @@ jobs:
           echo "$(cat ./results/slack_summary.txt)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Post results to slack
-        uses: MeilCli/slack-upload-file@v3
+      # - name: Post results to slack
+      #   uses: MeilCli/slack-upload-file@v3
+      #   with:
+      #     slack_token: ${{ secrets.SLACK_TOKEN }}
+      #     channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+      #     file_path: "/home/runner/work/privado-core/privado-core/result-${{github.event.number}}.zip"
+      #     initial_comment: "Comparison Results generated on ${{github.event.repository.name}} by PR ${{github.event.number}} from branch ${{github.head_ref}} to ${{github.base_ref}} \nPR link https://github.com/Privado-Inc/privado-core/pull/${{github.event.number}} \nSummary Report:\n ${{ env.MESSAGE }}"
+      #     file_type: "zip"
+
+  send-result-to-workflow:
+    needs: send-result-to-slack
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Python 3.10
+        uses: actions/setup-python@v4
         with:
-          slack_token: ${{ secrets.SLACK_TOKEN }}
-          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
-          file_path: "/home/runner/work/privado-core/privado-core/result-${{github.event.number}}.zip"
-          initial_comment: "Comparison Results generated on ${{github.event.repository.name}} by PR ${{github.event.number}} from branch ${{github.head_ref}} to ${{github.base_ref}} \nPR link https://github.com/Privado-Inc/privado-core/pull/${{github.event.number}} \nSummary Report:\n ${{ env.MESSAGE }}"
-          file_type: "zip"
+          python-version: '3.10'
+
+      - name: Download result folder
+        uses: actions/download-artifact@master
+        with:
+          name: results
+          path: ./results
+
+      - name: Clone standalone-monitoring-stability/PR-blocker
+        uses: actions/checkout@v3
+        with:
+          repository: Privado-Inc/standalone-monitoring-stability
+          path: ./temp/standalone-monitoring-stability
+          ref: PR-blocker
+
+      - name: rrrr
+        run: cat /home/runner/work/privado-core/privado-core/results/slack_summary.txt
+
+      - name: Export workflow output
+        run: cd ./temp/standalone-monitoring-stability && python3 ./workflow_check.py /home/runner/work/privado-core/privado-core/results/slack_summary.txt
+
+      - name: uu
+        run: cat ./temp/standalone-monitoring-stability/action_result.txt
+
+      - name: Set summary variable
+        run: |
+          echo "MESSAGE<<EOF" >> $GITHUB_ENV
+          echo "$(cat ./temp/standalone-monitoring-stability/action_result.txt)" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV 
+
+      - name: Workflow report analysis
+        if: ${{ env.MESSAGE != 'true' }}
+        run: exit 1

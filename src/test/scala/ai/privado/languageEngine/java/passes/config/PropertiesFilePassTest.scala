@@ -116,7 +116,7 @@ class GetPropertyTests extends PropertiesFilePassTestBase {
       javaP.value shouldBe "jdbc:mariadb://localhost:3306/accounts?useSSL=false"
 
       val List(lit: Literal) = cpg.property.usedAt.l
-      lit.originalProperty.head.value shouldBe "jdbc:mariadb://localhost:3306/accounts?useSSL=true"
+      lit.originalProperty.head.value shouldBe "jdbc:mariadb://localhost:3306/accounts?useSSL=false"
       lit.originalPropertyValue.head shouldBe "jdbc:mariadb://localhost:3306/accounts?useSSL=false"
     }
   }
